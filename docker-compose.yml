@@ -1,0 +1,22 @@
+version: '3'
+services:
+  mysql-db:
+    image: mysql:5.6
+    container_name: mysql-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+    ports:
+      - "3306"
+
+  mutant-finder:
+    build: .
+    container_name: mutant-finder-service
+    ports:
+      - "8081:8081"
+    environment:
+      - MYSQL_URL=jdbc:mysql://mysql-db:3306/mysql
+    links:
+      - mysql-db
+    depends_on:
+      - mysql-db
+    restart: unless-stopped

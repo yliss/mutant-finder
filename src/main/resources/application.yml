@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: dev
+name:
+server:
+  port: 8081
+  servlet:
+    contextPath: /mutant-finder
