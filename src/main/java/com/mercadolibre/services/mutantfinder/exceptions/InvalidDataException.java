@@ -1,4 +1,4 @@
-package com.mercadolibre.services.mutantfinder.exceptions.handlers;
+package com.mercadolibre.services.mutantfinder.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

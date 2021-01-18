@@ -43,11 +43,10 @@ public class MessageTest {
     @Test
     public void Should_Generate_Different_Hash_Code_For_Different_Objects() {
         final Message message = new Message();
+        message.setCode("12312312");
         message.setDescription("This is the first message");
 
-        final Message message2 = new Message();
-        message.setCode("10111");
-        message.setDescription("This is the first message");
+        final Message message2 = new Message("10111","This is the first message");
 
         final int result1 = message.hashCode();
         final int result2 = message2.hashCode();
