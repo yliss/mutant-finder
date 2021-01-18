@@ -8,11 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HumanRepository extends CrudRepository<HumanEntity,Long>,CustomHumanRepository {
-    /*
-    @Query(value = "select " +
-            "new com.mercadolibre.services.mutantfinder.data.entities.HumanClassificationStatisticsTemp(" +
-            "count(human),0" +
-            ") from HumanEntity human")
-    HumanClassificationStatisticsTemp retrieveStatistics();
-    */
 }
