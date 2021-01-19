@@ -25,7 +25,7 @@ public class CustomHumanRepositoryImpl implements CustomHumanRepository {
                 "(SELECT COUNT(HUM) FROM HUMAN HUM WHERE HUM.IS_MUTANT = TRUE) AS count_human_dna";
         Query query = entityManager.createNativeQuery(nativeQuery);
         List<Object[]> list = query.getResultList();
-        if(list != null && list.size() > 0) {
+        if(list != null && !list.isEmpty()) {
             Object[] values = list.get(0);
             final long countMutant = ((BigInteger)values[0]).longValue();
             final long countHuman = ((BigInteger)values[1]).longValue();
