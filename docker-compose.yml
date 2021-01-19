@@ -1,12 +1,12 @@
 version: '3'
 services:
-  mysql-db:
-    image: mysql:5.6
-    container_name: mysql-db
+  db1:
+    image: postgres:latest
+    container_name: db1
     environment:
-      - MYSQL_ROOT_PASSWORD=test
+      - POSTGRES_PASSWORD=test
     ports:
-      - "3306"
+      - "5432"
 
   mutant-finder:
     build: .
@@ -14,9 +14,9 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - MYSQL_URL=jdbc:mysql://mysql-db:3306/mysql
+      - DB1_URL=jdbc:postgresql://db1:5432/postgres
     links:
-      - mysql-db
+      - db1
     depends_on:
-      - mysql-db
+      - db1
     restart: unless-stopped
