@@ -221,10 +221,9 @@ public class DNAFinderServiceImpl implements DNAFinderService {
 
 	
 	private static String[][] addLineToDnaArray(String[] dnaIn, String[][] dnaArray, int posY) {
-		String[] line = dnaIn[posY].split("");
-		
-		for (int posX = 0; posX < line.length; posX++)
-			dnaArray[posY][posX] = line[posX];
+		final String[] line = dnaIn[posY].split("");
+		dnaArray[posY] = line;
+
 		return dnaArray;
 	}
 
