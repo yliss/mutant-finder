@@ -25,7 +25,12 @@ public class DNAFinderServiceImpl implements DNAFinderService {
         this.humanClassificationMapper = humanClassificationMapper;
     }
 
-    @Override
+	/**
+	 * Return boolean value of the DNA array processing, validations on the size
+	 * array and coherence with the information of the nitrogenous bases (A, T, C,
+	 * G).
+	 */
+	@Override
     public boolean isMutant(String[] dnaArray) {
         LOGGER.info("Starting isMutant method inside service");
         if(dnaArray == null || dnaArray.length <= 1 ||  isNotValidateArraySize(dnaArray)) {
@@ -38,7 +43,6 @@ public class DNAFinderServiceImpl implements DNAFinderService {
         humanEntity.setHashCode(simpleHash(dnaArray));
         humanEntity.setDna(String.join("",dnaArray));
         humanEntity.setIsMutant(result);
-
         humanRepository.save(humanEntity);
 
         LOGGER.info("Finishing isMutant method inside service");
@@ -71,111 +75,180 @@ public class DNAFinderServiceImpl implements DNAFinderService {
 
         return hash;
     }
-    
-    private boolean evaluateDnaIsMutant(String[] dnaIn) {
-    	String[][] dnaArray = new String[dnaIn.length][dnaIn.length];
+
+	/**
+	 * Return Boolean value of finding or not more than a sequence of four equal
+	 * letters in any direction: Vertical, horizontal, diagonal or inverted
+	 * diagonal. The method implementation was inspired by the operation of the
+	 * floodfill algorithm. Where the area formed by contiguous elements in an array
+	 * is determined performing the validation of continuous elements to the
+	 * processed node. The method comprises case management for sequences of letters
+	 * of 5-6 numbers of letters, where it is not possible to confuse and generate a
+	 * new sequence with an already created sequence.
+	 * 
+	 * The search of the sequences is carried out in order and by count of steps
+	 * given between the processed node.
+	 * 
+	 * @param dnaIn
+	 * @return Boolean result
+	 */
+	private boolean evaluateDnaIsMutant(String[] dnaIn) {
+		String[][] dnaArray = new String[dnaIn.length][dnaIn.length];
 		int size = dnaIn.length;
+		int totalNumberOfSequencesFound = 0;
 
-		for (int posY = 0; posY < size; posY++) {
-
-			dnaArray = addLineToDnaArray(dnaIn, dnaArray, posY);
-			int nSecuences = 0;
+		for (int positionY = 0; positionY < size; positionY++) {
+			dnaArray = addLineToDnaArray(dnaIn, dnaArray, positionY);
+			int numberOfSequencesFound = 0;
+			int positionX = 0;
 			int stepX = 0;
-			int stepY = 0;
-			int initialX = 0;
-			/*
-			 * stepHorizontal
+			int stepY = 0;	
+			/**
+			 * Step Horizontal.
 			 */
-
 			do {
-				if (dnaArray[posY][stepX].equals(dnaArray[posY][stepX + 1]))
-					nSecuences++;
-				else
-					nSecuences = 0;
-
+				if (dnaArray[positionY][stepX].equals(dnaArray[positionY][stepX + 1])) {
+					numberOfSequencesFound++;
+					if (numberOfSequencesFound >= 3) {
+						totalNumberOfSequencesFound++;
+						if (numberOfSequencesFound == 4) {
+							totalNumberOfSequencesFound--;
+							numberOfSequencesFound = 0;
+							if (totalNumberOfSequencesFound == 2)
+								totalNumberOfSequencesFound--;
+						}
+					}
+				} else {
+					numberOfSequencesFound = 0;
+				}
 				stepX++;
-			} while (stepX + 1 < size && nSecuences < 3);
-			if (nSecuences == 3) return true;
-			
+			} while (stepX + 1 < size && totalNumberOfSequencesFound < 2);
+			if (totalNumberOfSequencesFound == 2) return true;
 
 			/*
-			 * stepDiagonal
+			 * Step Diagonal
 			 */
-
-			if (posY >= 3) {
-				nSecuences = 0;
+			if (positionY >= 3) {
+				numberOfSequencesFound = 0;
 				stepX = 0;
-				initialX = 0;
-				stepY = posY;
+				positionX = 0;
+				stepY = positionY;
 				do {
 					if (dnaArray[stepY][stepX].equals(dnaArray[stepY - 1][stepX + 1])) {
-						nSecuences++;
+						numberOfSequencesFound++;
 						stepX++;
 						stepY--;
+						if (numberOfSequencesFound >= 3) {
+							totalNumberOfSequencesFound++;
+							if (numberOfSequencesFound == 4) {
+								totalNumberOfSequencesFound--;
+								numberOfSequencesFound = 0;
+								if (totalNumberOfSequencesFound == 2)
+									totalNumberOfSequencesFound--;
+							}
+						}
 					} else {
-						initialX++;
-						nSecuences = 0;
-						stepX = initialX;
-						stepY = posY;
+						positionX++;
+						numberOfSequencesFound = 0;
+						stepX = positionX;
+						stepY = positionY;
 					}
-				} while (stepX + 1 < size && stepY - 1 < size && nSecuences < 3);
-				if (nSecuences == 3) return true;
+				} while (stepX + 1 < size && stepY > 0);
+				if (totalNumberOfSequencesFound == 2) return true;
 
 				/*
-				 * stepVertical
+				 * Steps Vertical
 				 */
-				
 
-				nSecuences = 0;
+				numberOfSequencesFound = 0;
 				stepX = 0;
-				stepY = posY;
+				stepY = positionY;
 				do {
-					if (dnaArray[posY][stepX].equals(dnaArray[stepY - 1][stepX])) {
-						nSecuences++;
+					if (dnaArray[positionY][stepX].equals(dnaArray[stepY - 1][stepX])) {
+						numberOfSequencesFound++;
 						stepY--;
+						if (numberOfSequencesFound >= 3) {
+							totalNumberOfSequencesFound++;
+							if (numberOfSequencesFound == 4) {
+								totalNumberOfSequencesFound--;
+								numberOfSequencesFound = 0;
+								if (totalNumberOfSequencesFound == 2)
+									totalNumberOfSequencesFound--;
+							}
+						}
 					} else {
-						nSecuences = 0;
-						stepY = posY;
+						numberOfSequencesFound = 0;
+						stepY = positionY;
 						stepX++;
 					}
-
-				} while (stepX < size && stepY - 1 < size && nSecuences < 3);
-				if (nSecuences == 3) return true;
+				} while (stepX < size && stepY > 0);
+				if (totalNumberOfSequencesFound == 2) return true;
 
 				/*
-				 * step Inverted Diagonal
+				 * Steps Inverted Diagonal
 				 */
-			
-				nSecuences = 0;
+
+				numberOfSequencesFound = 0;
 				stepX = 3;
-				initialX = 3;
-				stepY = posY;
+				positionX = 3;
+				stepY = positionY;
 				do {
 					if (dnaArray[stepY][stepX].equals(dnaArray[stepY - 1][stepX - 1])) {
-						nSecuences++;
+						numberOfSequencesFound++;
 						stepX--;
 						stepY--;
+						if (numberOfSequencesFound >= 3) {
+							totalNumberOfSequencesFound++;
+							if (numberOfSequencesFound == 4) {
+								totalNumberOfSequencesFound--;
+								numberOfSequencesFound = 0;
+								if (totalNumberOfSequencesFound == 2)
+									totalNumberOfSequencesFound--;
+							}
+						}
 					} else {
-						initialX++;
-						nSecuences = 0;
-						stepX = initialX;
-						stepY = posY;
+						positionX++;
+						numberOfSequencesFound = 0;
+						stepX = positionX;
+						stepY = positionY;
 					}
-				} while (stepX  < size && stepY - 1 < size && nSecuences < 3);
-				if (nSecuences == 3) return true;
+				} while (stepX < size && stepY > 0);
+				if (totalNumberOfSequencesFound == 2) return true;
 			}
 		}
 		return false;
 	}
 
+	
 	private static String[][] addLineToDnaArray(String[] dnaIn, String[][] dnaArray, int posY) {
 		String[] line = dnaIn[posY].split("");
+		
 		for (int posX = 0; posX < line.length; posX++)
 			dnaArray[posY][posX] = line[posX];
 		return dnaArray;
 	}
 
+	/**
+	 * Evaluation of the size of the array, if the width of the array is equal to
+	 * the length.
+	 * 
+	 * @param dnaArray
+	 * @return
+	 */
 	private boolean isNotValidateArraySize(String[] dnaArray) {
 		return (dnaArray[0].length() != dnaArray.length);
+	}
+
+	// TODO IMPLEMENTAR
+	/**
+	 * Evaluation of the letters entered in the adn array by Line. There should be
+	 * no letters other than ATCG.
+	 * 
+	 * @param dnaLine Array line.
+	 * @return
+	 */
+	private boolean containsNotValidLetters(String dnaLine) {
+		LOGGER.info("Processed line"+dnaLine);
+		return (dnaLine.contains("ATCG"));
 	}
 }

@@ -42,104 +42,148 @@ public class DNAFinderServiceImplTest {
 	public void whenDnaArraysIsINValidAndSecuenceMutanExistThenShouldReturnAnError() {
 		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
 		final String[] dna = { "AAAA", "CCCC", "CCCC" };
-		dnaFinderService.isMutant(dna);
-		
+		dnaFinderService.isMutant(dna);		
+	}
+
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanNoExistThenShouldReturnFalse() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "TCTTCTTT", "GACCGGAG", "GACTTGCA", "GAGCGACT", "CTGTGTGT", "CAATCACA", "TTCGACCT",
+				"CTTCTAAC" };
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertFalse(isMutant);
+	}
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanExistOnceInLastPositionThenShouldReturnFalse() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = {"TCAGGTTT","GAGCGGCG","GGCTTGTA","GAGCGACT","CTGTGTCT","CAATCAGA","TTCGACCT","CTTCTAAC"};
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertFalse(isMutant);
 	}
 	
 	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanNotExistThenShouldReturnFalse() {
+	public void whenDnaArraysIsValidAndSecuenceMutanExistOnceThenShouldReturnFalse() {
 		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = { "CTGA", "TGAC", "GGCT", "ACTG" };
+		final String[] dna = {"TCAGGTTT","GAGCGGCG","GGCTTGTA","GAGCGACT","CTGTGTCT","CAATCAGA","TTCGACCT","CTTCTAAC"};
 		final boolean isMutant = dnaFinderService.isMutant(dna);
 		assertFalse(isMutant);
 	}
 
 	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanExistInDiagonalSuperiorThenShouldReturnTrue() {
+	public void whenDnaArraysIsValidAndSecuenceMutanExistTwiceInLastPositionThenShouldReturnTrue() {
 		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = { "TCAGGTTT", "GAGCGGCG", "GGCTTGTA", "GAGCGACT", "CTGTGTCT", "CAATCAGA", "TTCGACCT",
-							   "CTTCTAAC" };
+		final String[] dna = {"TCACGTTT","GACCTGCG","GACCTGAA","GATCGAGT","CCGTGTCT","CAATCACA","CTCGACAT","CCCCTATC"};
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertTrue(isMutant);
+	}
+
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanExistTwiceXPositionThenShouldReturnTrue() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "TCACGTTT", "GACTTTCG", "GACATGAA", "GATTGTGT", "CCGTGTTT", "CAATCACA", "TTCGACAT",
+				"CTTCTATC" };
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertTrue(isMutant);
+	}
+
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanExistTwiceIntersectsThenShouldReturnTrue() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "TCAGGTTT", "GACGAGCG", "GAGGTGAA", "GGGGGAGT", "CTTTGTCT", "CAATCACA", "TTCGACAT",
+				"CTTCTATC" };
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertTrue(isMutant);
+	}
+
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanExistTwiceLastThenShouldReturnTrue() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "TCGCGTGT", "GACATTGG", "GACAAGAA", "GATAGCCC", "CCGTATAT", "CAATCTAT", "TTCGACAT",
+				"CTTCTTTT" };
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertTrue(isMutant);
+	}
+
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanExistTwiceInDiagonalLineThenShouldReturnTrue() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "TCCCGTAT", "GTCATTCG", "GATACGGA", "GATTGACT", "CCGTTTGT", "CAATCTAA", "TTCGACTT",
+				"CTTCTAAT" };
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertTrue(isMutant);
+	}
+
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanExistInbigArrayThenShouldReturnTrue() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACAHTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"ACTGACTGACTGACACTGACTGACTGAAACTGACTGACTGAAACTGACTGACTGAAACTG",
+				"ACTGACTGACTGACACTGACTGACTGCCACTGCCTGACTGCCACTGACTGCCTGCCACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGTACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGAATGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTA",
+				"ACTGACTGACTGACAHTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTT",
+				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
+				"ACTGACTGACTGACACTGACTGACTGAAACTGACTGACTGAAACTGACTGACTGAACCCC" };
 		final boolean isMutant = dnaFinderService.isMutant(dna);
 		assertTrue(isMutant);
 	}
 	
 	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanExistInDiagonalInferiorThenShouldReturnTrue() {
+	public void whenDnaArraysIsValidAndSecuenceMutanNoExistInbigArrayThenShouldReturnFalse() {
 		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = { "TCAGGTTT", "GAGCGGCG", "GACTTGTA", "GAGCGACT", "CTGTGTCT", "CAATCATA", "TTCGATCT",
-			                   "CTTCTAAC" };
-		final boolean isMutant = dnaFinderService.isMutant(dna);
-		assertTrue(isMutant);
-	}
-	
-	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanExistInDiagonalInvertedLastThenShouldReturnTrue() {
-		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = {"TCGCGTGT","GACATTGG","GACAAGAA","GATAGCCT","CCGTATAT","CAATCAAA","TTCGACAT","CTTCTAGA"}	;
-		final boolean isMutant = dnaFinderService.isMutant(dna);
-		assertTrue(isMutant);
-	}
-	
-	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanExistInDiagonalInvertedThenShouldReturnTrue() {
-		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = { "TCCCGTAT", "GTCATTCG", "GATACGGA", "GATTGACT", "CCGTGTGT", "CAATCAAA", "TTCGACCT",
-				"CTTCTAAC" };
-		final boolean isMutant = dnaFinderService.isMutant(dna);
-		assertTrue(isMutant);
-	}
-	
-	
-	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanExistInDiagonalInvertedMiddleThenShouldReturnTrue() {
-		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = { "GCACGTCT", "AACCTTAG", "GACAAGAA", "GATAGACT", "CCGTGTAT", "CAATCAGA", "TTCGACAT",
-				"CTTCTAGC" };
-		final boolean isMutant = dnaFinderService.isMutant(dna);
-		assertTrue(isMutant);
-	}
-	
-	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanExistInVerticalFirstPositionThenShouldReturnTrue() {
-		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = { "GCACGTCT", "GACCTTAG", "GACAAGAA", "GATAGACT", "CCGTGTTT", "CAATCAGA", "TTCGACAT",
-				"CTTCTAGC" };
-		final boolean isMutant = dnaFinderService.isMutant(dna);
-		assertTrue(isMutant);
-	}
-	
-	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanExistInVerticalMiddlePositionThenShouldReturnTrue() {
-		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = { "GCACGTCT", "AACCTTCG", "GACAAGGA", "GATAGCAT", "CAGTGTAT", "CAATCAGA", "TTCGACCT",
-				"CTTCTACC" };
-		final boolean isMutant = dnaFinderService.isMutant(dna);
-		assertTrue(isMutant);
-	}
-					
-	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanExistInVerticalLastPositionThenShouldReturnTrue() {
-		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = { "GCACGTCT", "AACCTTCG", "GTCAGGCA", "GTTCCAAA", "CAGTGTGT", "CAATCAAT", "TTCGACCT",
-				"CTCGCGCT" };
-		final boolean isMutant = dnaFinderService.isMutant(dna);
-		assertTrue(isMutant);
-	}
-	
-	@Test
-	public void whenDnaArraysIsValidAndSecuenceMutanExistInVerticalLastUPPositionThenShouldReturnTrue() {
-		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-		final String[] dna = { "GCACGTAT", "AACCTTTT", "GTCAGGCT", "GTTACAGT", "CAGTGTAT", "CAATCACC", "TTCGACTT",
-				"CTCGCGCC" };
-		final boolean isMutant = dnaFinderService.isMutant(dna);
-		assertTrue(isMutant);
-	}
-	
-    @Test
-    public void whenParameterIsValidAndSecuenceMutanExistInLastVerticalLastPositionThenRetunTrue(){
-        DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
-        final String[] dna = 
-        	   { "ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+		final String[] dna = { "ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
 				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
 				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
 				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
@@ -195,15 +239,46 @@ public class DNAFinderServiceImplTest {
 				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
 				"TGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGACTGACTGACTGTGAC",
 				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
-				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTA",
-				"ACTGACTGACTGACAHTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTT",
+				"ACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
+				"ACTGACTGACTGACAHTGACTGACTGACACTGACTGACTGACACTGACTGACTGACACTG",
 				"CGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGACGGACGGACGCGGA",
-				"ACTGACTGACTGACACTGACTGACTGAAACTGACTGACTGAAACTGACTGACTGAACCCC" };
+				"ACTGACTGACTGACACTGACTGACTGAAACTGACTGACTGAAACTGACTGACTGAAACTG" };
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertFalse(isMutant);
+	}
+	
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanNoExistTwiceSharedPositionsThenShouldReturnFalse() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "TCCCGTAT", "GCCATTCG", "GATACGGA", "GATTCACT", "CCGCGTGT", "CACTCAAA", "TCCGCCCT",
+				"CTTCCAAC" };
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertFalse(isMutant);
+	}
+	
+	
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanNoExistTwiceVerticalPositionsThenShouldReturnFalse() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = {"GCACGTCT","GACCTTAG","GACAAGAA","GATAGACT","CCGTGTTT","CAATCAGA","TTCGACAT","CTTCTAGC"}					;
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertFalse(isMutant);
+	}
 
-        final boolean isMutant = dnaFinderService.isMutant(dna);
-
-        assertTrue(isMutant);
-    }
+	@Test
+	public void whenDnaArraysIsValidAndSecuenceMutanExistTwiceVerticalPositionsThenShouldReturnTrue() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = {"GCACGTCT","GACCTTAG","GACAAGAA","GATAGACT","GCGTGTTT","GAATCAGA","GTCGACAT","GTTCTAGC"}	;				
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertTrue(isMutant);
+	}
+	@Test
+	public void whenDnaArraysIsInValidAndSecuenceMutanExistTwiceVerticalPositionsThenShouldReturnFalse() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "XXXX", "XCGC", "XGCC", "XGCC" };
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertFalse(isMutant);
+	}
 
     @Test
     public void whenCallingTheRetrieveStatisticsMethodThenShouldTheClassificationModelNotNull(){
