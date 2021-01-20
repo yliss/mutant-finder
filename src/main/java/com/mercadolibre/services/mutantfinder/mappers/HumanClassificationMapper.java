@@ -25,7 +25,7 @@ public interface HumanClassificationMapper {
         if(mutantCount <= 0) {
             return 0;
         } else {
-            return humanCount / mutantCount;
+            return mutantCount / humanCount ;
         }
     }
 }

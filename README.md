@@ -5,8 +5,12 @@ Rest Service for search if a dna chain is mutant
 REQUIREMENTS
 - Java 8
 - Maven
+- Docker
+- Docker compose
 
 NOTE:
+If you want to use docker remember to install docker in the machine that
+will test the service.
 Please check if maven is install in your machine, you can check it with the
 following command:
 
@@ -31,7 +35,11 @@ git clone https://github.com/yliss/mutant-finder.git
 ```
 
 You can execute this project in local using maven or you can start 
-the service with  docker-compose.
+the service with  docker-compose. Run the following command for
+start docker-compose and create the containers.
+```bash
+docker-compose up
+```
 
 TESTING THE SERVICE
 
@@ -54,6 +62,34 @@ mvn spring-boot:run
 Execute the following java class
 ```bash
 com.mercadolibre.services.mutantfinder.Application
+```
+
+## Executing with Docker-compose
+This command will create two containers, the first one for the
+mutant finder service, and the other one for the data base of 
+postgres
+Execute the following command for create the jar file in the 
+target folder:
+```bash
+mvn package
+```
+
+Now execute the following command for build the containers:
+```bash
+docker-compose build
+```
+
+After build the containers execute one of the following commands for
+start the containers:
+
+Starting in current bash console:
+```bash
+docker-compose up
+```
+
+Or starting in background:
+```bash
+docker-compose up -d
 ```
 
 ## Generating the jar file
@@ -88,3 +124,6 @@ http://localhost:8081/mutant-finder
 
 Mutants endpoints
 http://localhost:8081/mutant-finder/mutant
+
+Mutants stats endpoints
+http://localhost:8081/mutant-finder/mutant/stats

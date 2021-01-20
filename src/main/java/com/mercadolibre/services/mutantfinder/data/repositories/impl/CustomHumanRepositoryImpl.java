@@ -27,8 +27,8 @@ public class CustomHumanRepositoryImpl implements CustomHumanRepository {
         List<Object[]> list = query.getResultList();
         if(list != null && !list.isEmpty()) {
             Object[] values = list.get(0);
-            final long countMutant = ((BigInteger)values[0]).longValue();
-            final long countHuman = ((BigInteger)values[1]).longValue();
+            final long countMutant = ((BigInteger)values[1]).longValue();
+            final long countHuman = ((BigInteger)values[0]).longValue();
             HumanClassificationStatisticsTemp humanClassificationStatisticsTemp =
                     new HumanClassificationStatisticsTemp();
 
