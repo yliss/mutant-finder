@@ -12,12 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays;
-
 import static com.mercadolibre.services.mutantfinder.utils.StringMessages.STATISTICS_FROM_HUMAN_TABLE_INVALID;
 
 @Service
@@ -138,8 +134,6 @@ public class DNAFinderServiceImpl implements DNAFinderService {
                         if (numberOfSequencesFound == 4) {
                             totalNumberOfSequencesFound--;
                             numberOfSequencesFound = 0;
-                            if (totalNumberOfSequencesFound == 2)
-                                totalNumberOfSequencesFound--;
                         }
                     }
                 } else {

@@ -287,6 +287,15 @@ public class DNAFinderServiceImplTest {
 		dnaFinderService.isMutant(dna);
 	}
 
+	@Test
+	public void whenDnaArraysIsInValidAndSecuenceMutanExistThridTimesShouldReturnFalse() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "TCCCGTAC", "GCCATTGG", "GATACAGA", "GATTCACT", "GCGCGTGT", "CACTCAAA", "TCCGCCCT",
+				"CTTCCAAC" };
+		final boolean isMutant = dnaFinderService.isMutant(dna);
+		assertTrue(isMutant);
+	}
+
     @Test
     public void whenCallingTheRetrieveStatisticsMethodThenShouldTheClassificationModelNotNull(){
         DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
@@ -301,8 +310,33 @@ public class DNAFinderServiceImplTest {
         assertNotNull(humanClassificationStatistics);
     }
 
-    @Test
+    @Test (expected = InvalidDataException.class)
     public void whenCallingTheRetrieveStatisticsMethodThenShouldTheClassificationModel(){
+        DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+       
+        final HumanClassificationStatisticsTemp humanClassificationStatisticsTemp = null;
+        
+        when(humanRepository.retrieveStatistics()).thenReturn(humanClassificationStatisticsTemp);
+        
+        dnaFinderService.retrieveStatistics();
+    }
+    
+    @Test
+    public void whenCallingTheRetrieveStatisticsWithNullEntityThenShouldTheClassificationModelNotNull(){
+        DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+
+        final HumanClassificationStatisticsTemp humanClassificationStatisticsTemp =
+                new HumanClassificationStatisticsTemp();
+
+        when(humanRepository.retrieveStatistics()).thenReturn(humanClassificationStatisticsTemp);
+
+        final HumanClassificationStatistics humanClassificationStatistics = dnaFinderService.retrieveStatistics();
+
+		assertNotNull(humanClassificationStatistics);
+	}
+    
+    @Test
+    public void whenCallingTheRetrieveStatisticsMethodThenShouldTheClassificationModel2(){
         DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
 
         final HumanClassificationStatisticsTemp humanClassificationStatisticsTemp =
@@ -321,5 +355,4 @@ public class DNAFinderServiceImplTest {
         assertTrue(humanClassificationStatisticsTemp.getCountMutantDNA() ==
                 humanClassificationStatistics.getCountMutantDNA());
     }
-    
 }
