@@ -84,17 +84,17 @@ public class DNAFinderServiceImpl implements DNAFinderService {
         }
     }
 
-    private long simpleHash(final String[] dnaArray) {
-        int hash = 7;
-        for (int i = 0; i < dnaArray.length; i++) {
-            String row = dnaArray[i];
-            for (int j = 0; j < row.length(); j++) {
-                hash = hash * 31 + row.charAt(j);
-            }
-        }
+	private long simpleHash(final String[] dnaArray) {
+		int hash = 7;
+		for (int i = 0; i < dnaArray.length; i++) {
+			String row = dnaArray[i];
+			for (int j = 0; j < row.length(); j++) {
+				hash = hash * 31 + row.charAt(j);
+			}
+		}
 
-        return hash;
-    }
+		return hash;
+	}
 
     /**
      * Return Boolean value of finding or not more than a sequence of four equal
