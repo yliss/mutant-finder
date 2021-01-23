@@ -2,11 +2,12 @@ package com.mercadolibre.services.mutantfinder.data.repositories.impl;
 
 import com.mercadolibre.services.mutantfinder.data.entities.HumanClassificationStatisticsTemp;
 import com.mercadolibre.services.mutantfinder.data.repositories.CustomHumanRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import java.math.BigInteger;
@@ -15,9 +16,14 @@ import java.util.List;
 @Repository
 @Transactional(readOnly = true)
 public class CustomHumanRepositoryImpl implements CustomHumanRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+    
+    private final EntityManager entityManager;
 
+    @Autowired
+    public CustomHumanRepositoryImpl(EntityManager entityManager) {
+    	this.entityManager = entityManager;
+    }
+    
     @Override
     public HumanClassificationStatisticsTemp retrieveStatistics() {
         final String nativeQuery = "SELECT " +

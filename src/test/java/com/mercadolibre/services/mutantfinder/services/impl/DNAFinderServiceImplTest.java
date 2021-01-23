@@ -44,6 +44,12 @@ public class DNAFinderServiceImplTest {
 		final String[] dna = { "AAAA", "CCCC", "CCCC" };
 		dnaFinderService.isMutant(dna);		
 	}
+    @Test(expected = InvalidDataException.class)
+	public void whenDnaArraysWithOneLineMutanExistThenShouldReturnAnError() {
+		DNAFinderServiceImpl dnaFinderService = new DNAFinderServiceImpl(humanRepository, humanClassificationMapper);
+		final String[] dna = { "AAAA"  };
+		dnaFinderService.isMutant(dna);		
+	}
 
 	@Test
 	public void whenDnaArraysIsValidAndSecuenceMutanNoExistThenShouldReturnFalse() {
